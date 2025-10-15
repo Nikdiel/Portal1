@@ -1,1 +1,419 @@
+/* Тёмно-серый минимализм */
+:root {
+  --bg: #121214;
+  --panel: #1b1b1d;
+  --muted: #9aa0a6;
+  --text: #e6e6e6;
+  --accent: #2b2b2f;
+  --danger: #b23b3b;
+  --success: #2b8a57;
+  --radius: 8px;
+  --gap: 12px;
+  --sidebar-width: 280px;
+  font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
 
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+#app {
+  display: flex;
+  gap: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+#sidebar {
+  width: var(--sidebar-width);
+  background: var(--panel);
+  padding: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.admin-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.lectures-list {
+  overflow: auto;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Lecture item */
+.lecture-item {
+  padding: 10px;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.lecture-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.lecture-item.active {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.lecture-title-small {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.lecture-controls button {
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+/* Main */
+main {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.main-header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.lecture-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Lecture content */
+.lecture-content {
+  background: var(--accent);
+  padding: 18px;
+  border-radius: 10px;
+  flex: 1;
+  overflow: auto;
+}
+
+.lecture-text {
+  white-space: pre-wrap;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+/* Questions */
+.question {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.question p {
+  margin: 0 0 8px 0;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option input[type="radio"] {
+  accent-color: #6b7280;
+}
+
+.option-label {
+  cursor: pointer;
+}
+
+/* result badges */
+.result {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.result.correct {
+  color: var(--success);
+}
+
+.result.wrong {
+  color: var(--danger);
+}
+
+/* navigation */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+/* modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal {
+  background: var(--panel);
+  padding: 16px;
+  border-radius: 10px;
+  width: 520px;
+  max-width: 95%;
+}
+
+.modal h3 {
+  margin: 0 0 10px 0;
+}
+
+.modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* small helpers */
+.small {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.input,
+textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: transparent;
+  color: var(--text);
+  resize: vertical;
+}
+
+textarea {
+  min-height: 120px;
+}
+
+.flex-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ============================= */
+/* 📱 Мобильная адаптация        */
+/* ============================= */
+
+@media (max-width: 900px) {
+  #app {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  #sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebar-header {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .lectures-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    max-height: none;
+  }
+
+  .lecture-item {
+    flex: 1 0 45%;
+    text-align: center;
+    padding: 8px;
+  }
+
+  main {
+    padding: 12px;
+  }
+
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .lecture-content {
+    padding: 12px;
+  }
+
+  button,
+  .btn {
+    font-size: 15px;
+    padding: 8px 12px;
+  }
+
+  .input,
+  textarea {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .lecture-item {
+    flex: 1 0 100%;
+    font-size: 15px;
+  }
+
+  .main-header h1 {
+    font-size: 18px;
+  }
+
+  .lecture-text {
+    font-size: 15px;
+  }
+
+  .question p {
+    font-size: 15px;
+  }
+}
+.result-summary {
+  margin-top: 12px;
+  background: rgba(0,0,0,0.25);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.question.correct {
+  border: 1px solid var(--success);
+  background: rgba(43, 138, 87, 0.15);
+}
+
+.question.wrong {
+  border: 1px solid var(--danger);
+  background: rgba(178, 59, 59, 0.15);
+}
+
+.result-summary {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 15px;
+  margin-top: 10px;
+}
+.btn.danger {
+  background: #444;
+  border: 1px solid #666;
+  color: #ff6666;
+}
+.btn.danger:hover {
+  background: #222;
+  color: #ff8888;
+}
