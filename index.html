@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Учебный портал — Лекции и Тесты</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <h2>Лекции</h2>
+
+        <!-- Админ-кнопки -->
+        <div class="admin-controls" id="adminControls">
+          <button id="btnAddLecture" class="btn primary">Добавить лекцию</button>
+          <button id="btnEnableAdmin" class="btn">Включить админ</button>
+          <button id="btnLogoutAdmin" class="btn danger" style="display:none;">Выйти из администратора</button>
+        </div>
+      </div>
+
+      <div id="lecturesList" class="lectures-list"></div>
+    </aside>
+
+    <main id="main">
+      <header class="main-header">
+        <h1 id="lectureTitle">Выберите лекцию</h1>
+        <div class="meta">
+          <span id="lectureMeta"></span>
+          <div id="lectureActions" class="lecture-actions"></div>
+        </div>
+      </header>
+
+      <section id="lectureContent" class="lecture-content">
+        <div id="lectureText" class="lecture-text">Здесь будет текст лекции</div>
+
+        <div id="questionsArea" class="questions-area"></div>
+
+        <div class="navigation">
+          <button id="btnPrev" class="btn">Предыдущая</button>
+          <button id="btnNext" class="btn primary">Следующая</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Модальные окна -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="modalTitle"></h3>
+      <div id="modalBody"></div>
+      <div class="modal-actions">
+        <button id="modalCancel" class="btn">Отмена</button>
+        <button id="modalSave" class="btn primary">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
