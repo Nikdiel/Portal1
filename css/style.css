@@ -69,12 +69,15 @@ body,
   font-size: 13px;
   border-radius: 6px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn.primary {
   background: rgba(255, 255, 255, 0.03);
   color: var(--text);
   border-color: rgba(255, 255, 255, 0.06);
+  margin-left: 5px;
+  text-decoration: none;
 }
 
 .btn:active {
@@ -107,6 +110,10 @@ body,
 
 .lecture-item.active {
   background: rgba(255, 255, 255, 0.03);
+}
+.lecture-item.active a{
+  text-decoration: none;
+  color: #fff;
 }
 
 .lecture-title-small {
@@ -161,6 +168,13 @@ main {
   border-radius: 10px;
   flex: 1;
   overflow: auto;
+}
+.lecture-content form{
+  display: flex;
+  flex-direction: column;
+}
+.lecture-content form label{
+  margin: 10px 0;
 }
 
 .lecture-text {
@@ -220,7 +234,7 @@ main {
 .navigation {
   display: flex;
   justify-content: space-between;
-  margin-top: 14px;
+  margin-top: 20px;
 }
 
 /* modal */
@@ -411,7 +425,8 @@ textarea {
 .btn.danger {
   background: #444;
   border: 1px solid #666;
-  color: #ff6666;
+  color: #fff;
+  text-decoration: none;
 }
 .btn.danger:hover {
   background: #222;
