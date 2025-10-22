@@ -31,4 +31,6 @@
         // }
     }
     header('location:index.php?lect='.$_GET['lect'].'&pg='. $_GET['pg']);
+
+    $connection->close();
 ?>

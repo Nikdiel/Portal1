@@ -27,7 +27,6 @@
     $status = $row['status'];
     $group = $row['group_name'];
 
-    $currentAnswer = 0;
     
 ?>
 <!doctype html>
@@ -78,9 +77,9 @@
                 $res = $connection->query($q);
                 $qCount = $res->num_rows;
                 if($status == 'admin'){
-                  echo('<div class="lecture-item active"><a href="index.php?lect='.$lecturesRow['id'].'&pg=1"><div>'.$lecturesRow['nameLecture'].'</div><div class="small">'.$qCount.' вопрос(ов)</div></a><div class="lecture-controls"><button class="icon-btn">✎</button><button class="icon-btn">🗑</button></div></div>');
+                  echo('<div class="lecture-item"><a href="index.php?lect='.$lecturesRow['id'].'&pg=1"><div>'.$lecturesRow['nameLecture'].'</div><div class="small">'.$qCount.' вопрос(ов)</div></a><div class="lecture-controls"><button class="icon-btn" id="updateLecture">✎</button><a class="icon-btn" href="deleteLecture.php?lect='.$lecturesRow['id'].'">🗑</a></div></div>');
                 }else{
-                  echo('<div class="lecture-item active"><a href="index.php?lect='.$lecturesRow['id'].'&pg=1">'.$lecturesRow['nameLecture'].'</a></div>');
+                  echo('<div class="lecture-item"><a href="index.php?lect='.$lecturesRow['id'].'&pg=1">'.$lecturesRow['nameLecture'].'</a></div>');
                 }
               }
             }else{
@@ -101,7 +100,7 @@
           <?php
           if($status == 'admin'){
           echo('<span id="lectureMeta"></span>
-          <div id="lectureActions" class="lecture-actions"><button class="btn">Добавить вопрос</button></div>');
+          <div id="lectureActions" class="lecture-actions"><button class="btn" id="addQuetion">Добавить вопрос</button></div>');
           }
           ?>
         </div>
@@ -131,7 +130,6 @@
             
             
             if(!empty($_GET['pg'])){
-              $total= 0;
               if($_GET['pg'] == 1){
                 echo('<div id="lectureText" class="lecture-text">'.$lectureRow['lectureContent'].'</div>');
                 echo('<div class="navigation">
@@ -139,7 +137,7 @@
                     <a id="btnNext" class="btn primary" href="index.php?lect='.$selectedLectureId.'&pg='. $_GET['pg']  + 1 .'">Следующая</a>
                   </div>');
                 }
-                else if($_GET['pg'] == count($pageContent)){
+              elseif($_GET['pg'] == count($pageContent)){
                   echo('<div id="lectureText" class="lecture-text">'.$pageContent[$_GET['pg']-1]['content'].'</div>');
                   
                   $options = "SELECT * FROM options WHERE quetionId='".$pageContent[$_GET['pg']-1]['id']."'";
@@ -155,35 +153,49 @@
                     echo('<form id="check" method="post" action="test.php?lect='.$selectedLectureId.'&pg='.$_GET['pg'].'&q='. $pageContent[$_GET['pg']-1]['id'].'">');  
                     while($optRow = mysqli_fetch_array($optResult)){
                       echo('<label><input type="radio" class="quetion" name="q" value="'.$optRow['correctness'].'" required>'.$optRow['optionContent']."</label>");
-                      if($optRow['correctness'] == 1){$total+=1;}   
                     }
 
                     if($answersRow['correct'] == 1){
-                      echo('<h4>Вы ответили верно на этот вопрос</h4></form>');
+                      echo('<h4>Вы ответили верно на этот вопросы<span>✔️</span></h4></form>');
                     }else{
-                      echo('<h4>Вы ответили неверно на этот вопрос</h4></form>');
+                      echo('<h4>Вы ответили неверно на этот вопрос<span>❌</span></h4></form>');
                     }
 
                     echo('<div class="navigation">
                     <a id="btnPrev" class="btn" href="index.php?lect='.$selectedLectureId.'&pg='. $_GET['pg']  - 1 .'">Предыдущая</a>
-                    <a id="btnNext" class="btn primary" href="index.php?lect='.$selectedLectureId.'&pg='. $_GET['pg']  + 1 .'" style="visibility:hidden;">Следующая</a>
+                    <a class="btn primary" href="index.php?lect='.$selectedLectureId.'&pg=result">Показать результат</a>
                     </div>');
                   }else{
                     echo('<form id="check" method="post" action="test.php?lect='.$selectedLectureId.'&pg='.$_GET['pg'].'&q='. $pageContent[$_GET['pg']-1]['id'].'">');  
                     while($optRow = mysqli_fetch_array($optResult)){
                       echo('<label><input type="radio" class="quetion" name="q" value="'.$optRow['correctness'].'" required>'.$optRow['optionContent']."</label>");
-                      if($optRow['correctness'] == 1){$total+=1;}   
                     }
-                    echo('<button type="submit" class="btn primary" id="submitBtn">Проверить</button></form>');
+                    
+                    if($optCount>0){
+                      echo('<button type="submit" class="btn primary" id="submitBtn">Проверить</button></form>');
+                    }else{
+                      echo('<h4>Нет вариантов ответа</h4></form>');
+                    }
 
                     echo('<div class="navigation">
                     <a id="btnPrev" class="btn" href="index.php?lect='.$selectedLectureId.'&pg='. $_GET['pg']  - 1 .'">Предыдущая</a>
-                    <a id="btnNext" class="btn primary" href="index.php?lect='.$selectedLectureId.'&pg='. $_GET['pg']  + 1 .'" style="visibility:hidden;">Следующая</a>
+                    <a class="btn primary" href="index.php?lect='.$selectedLectureId.'&pg=result">Показать результат</a>
                     </div>');
-                  }
 
                   
               }
+            }elseif ($_GET['pg'] == 'result') {
+              $allQ = count($pageContent) - 1;
+              
+              $sql1 = "SELECT * FROM answers WHERE userId = '$userId' AND correct = '1' AND lectureId = '".$_GET['lect']."'";
+              $r1 = $connection->query($sql1);
+              $correctA = $r1->num_rows;
+
+              echo('<h2>Ваши результаты:</h2>
+                    <h1>'.$correctA.' из '.$allQ.'</h1>
+                    <a class="btn primary" href="index.php">На главную</a>
+                  ');
+            }
               else{
                 echo('<div id="lectureText" class="lecture-text">'.$pageContent[$_GET['pg']-1]['content'].'</div>');
                 
@@ -200,13 +212,12 @@
                   echo('<form id="check" method="post" action="test.php?lect='.$selectedLectureId.'&pg='.$_GET['pg'].'&q='. $pageContent[$_GET['pg']-1]['id'].'">');
                   while($optRow = mysqli_fetch_array($optResult)){
                     echo('<label><input type="radio" class="quetion" name="q" value="'.$optRow['correctness'].'" required>'.$optRow['optionContent']."</label>");
-                    if($optRow['correctness'] == 1){$total+=1;}
                   }
                   
                   if($answersRow['correct'] == 1){
-                      echo('<h4>Вы ответили верно на этот вопрос</h4></form>');
+                      echo('<h4>Вы ответили верно на этот вопрос<span>✔️</span></h4></form>');
                     }else{
-                      echo('<h4>Вы ответили неверно на этот вопрос</h4></form>');
+                      echo('<h4>Вы ответили неверно на этот вопрос<span>❌</span></h4></form>');
                     }
                   
                   echo('<div class="navigation">
@@ -218,7 +229,6 @@
                   echo('<form id="check" method="post" action="test.php?lect='.$selectedLectureId.'&pg='.$_GET['pg'].'&q='. $pageContent[$_GET['pg']-1]['id'].'">');
                   while($optRow = mysqli_fetch_array($optResult)){
                     echo('<label><input type="radio" class="quetion" name="q" value="'.$optRow['correctness'].'" required>'.$optRow['optionContent']."</label>");
-                    if($optRow['correctness'] == 1){$total+=1;}
                   }
                   echo('<button type="submit" class="btn primary" id="submitBtn">Проверить</button></form>');
                   
@@ -229,7 +239,7 @@
                 }
                 
               }
-              if($_GET['pg'] > count($pageContent)){
+              if($_GET['pg'] != 'result' && $_GET['pg'] > count($pageContent)){
                 header('Location: index.php?lect='.$selectedLectureId.'&pg='. $_GET['pg'] - 1);
               }
             }
@@ -242,7 +252,7 @@
             }
           }
           else{
-            echo('<div id="lectureText" class="lecture-text">Здесь будет текст лекции</div>');
+            echo('<div id="lectureText" class="lecture-text">Выберите лекцию в панели лекций</div>');
           }
         ?>
         
@@ -257,17 +267,19 @@
 
   <!-- Модальные окна -->
   <div id="modalOverlay" class="modal-overlay hidden">
-    <div class="modal">
-      <h3 id="modalTitle"></h3>
-      <div id="modalBody"></div>
-      <div class="modal-actions">
-        <button id="modalCancel" class="btn">Отмена</button>
-        <button id="modalSave" class="btn primary">Сохранить</button>
+    <form id="modalForm" method="post">
+      <div class="modal">
+        <h3 id="modalTitle"></h3>
+        <div id="modalBody"></div>
+        <div class="modal-actions">
+          <button id="modalCancel" class="btn" type="button">Отмена</button>
+          <button id="modalSave" class="btn primary">Сохранить</button>
+        </div>
       </div>
-    </div>
-  </div>
+    </form>
+        </div>  
 
-  <!-- <script src="js/scripts.js"></script> -->
+  <script src="js/scripts.js"></script>
 </body>
 </html>
 

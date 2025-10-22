@@ -102,16 +102,17 @@ body,
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+  background: rgba(255, 255, 255, 0.10);
 }
 
 .lecture-item:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .lecture-item.active {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
 }
-.lecture-item.active a{
+.lecture-item a{
   text-decoration: none;
   color: #fff;
 }
@@ -181,15 +182,29 @@ main {
   white-space: pre-wrap;
   color: var(--text);
   line-height: 1.6;
-  margin-bottom: 18px;
+  margin: 20px;
 }
 
 /* Questions */
-.question {
+#check label {
   padding: 12px;
   background: rgba(0, 0, 0, 0.12);
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+}
+#check label:hover{
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+#check h4{
+  height: 60px;
+  border: 2px solid #666;
+  border-radius: 8px;
+  background-color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
 }
 
 .question p {
@@ -257,7 +272,32 @@ main {
 }
 
 .modal h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 20px 0;
+}
+
+#modalBody{
+  display: flex;
+  flex-direction: column;
+}
+#modalBody input, #modalBody textarea{
+  height: 30px;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #2b2b2f;
+  color: #e6e6e6;
+  padding-left: 5px;
+  border-style: none; 
+}
+
+#modalBody label{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#modalBody label input[type="text"]{
+  width: 100%;
 }
 
 .modal .modal-actions {
@@ -309,7 +349,7 @@ textarea {
 }
 
 .icon-btn:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* ============================= */
