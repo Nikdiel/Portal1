@@ -5,10 +5,7 @@ require "connect.php";
 
 $connection = new mysqli($host, $db_user, $db_password, $db_name);
 
-$lecture = "DELETE FROM lecture WHERE id='" . $_GET['lect'] . "'";
-$connection->query($lecture);
-
-$q = "SELECT * FROM quetions WHERE lectureId=" . $_GET['lect'];
+$q = "SELECT * FROM quetions WHERE id=" . $_GET['q'];
 $resQ = $connection->query($q);
 $qCount = $resQ->num_rows;
 if ($qCount > 0) {
@@ -18,7 +15,7 @@ if ($qCount > 0) {
     }
 }
 
-$quetions = "DELETE FROM quetions WHERE lectureId =" . $_GET['lect'];
+$quetions = "DELETE FROM quetions WHERE id =" . $_GET['q'];
 $connection->query($quetions);
 
 if (isset($_GET['lect'])) {
@@ -26,7 +23,7 @@ if (isset($_GET['lect'])) {
 } elseif (isset($_GET['pg'])) {
     header('Location: index.php?lect=' . $_GET['lect']);
 } else {
-    header('Location: index.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg']);
+    header('Location: index.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg'] - 1);
 }
 
 $connection->close();

@@ -5,13 +5,12 @@ require "connect.php";
 
 $connection = new mysqli($host, $db_user, $db_password, $db_name);
 
-$stmt = $connection->prepare("INSERT INTO `lecture` (`nameLecture`, `lectureContent`, `forGroup`, `adminId`) VALUES(?, ?, ?, ?)");
-$stmt->bind_param('sssi', $_POST['name'], $_POST['content'], $_POST['group'], $_SESSION['id']);
-$stmt->execute();
+$opt = "DELETE FROM options WHERE id =" . $_GET['opt'];
+$connection->query($opt);
 
-if (isset($_GET['lect'])) {
+if (!isset($_GET['lect'])) {
     header('Location: index.php');
-} elseif (isset($_GET['pg'])) {
+} elseif (!isset($_GET['pg'])) {
     header('Location: index.php?lect=' . $_GET['lect']);
 } else {
     header('Location: index.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg']);
