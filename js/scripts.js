@@ -118,8 +118,9 @@ document.getElementById('addOptions').addEventListener("click", function(){
 
     const lect = params.get('lect');
     const pg = params.get('pg');
+    const q = this.dataset.id;
 
-    document.getElementById('modalForm').setAttribute('action', `addOptions.php?lect=${lect}&pg=${pg}`);
+    document.getElementById('modalForm').setAttribute('action', `addOptions.php?lect=${lect}&pg=${pg}&q=${q}`);
     document.getElementById("modalTitle").textContent = "Добавить вопрос";
     const modalBody = document.getElementById("modalBody");
     
@@ -144,6 +145,41 @@ document.getElementById('addOptions').addEventListener("click", function(){
             document.getElementById("modalOverlay").className = "modal-overlay hidden";
         }else{
             modalBody.innerHTML = `<p style="color:red;">Введите хотя бы один вариант</p>`;
+        }
+    })
+
+})
+
+document.getElementById('addGroupBtn').addEventListener("click", function(){
+    document.getElementById("modalOverlay").className = "modal-overlay";
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has('lect') && params.get('lect').trim() !== '') {
+        const lect = params.get('lect');
+    }else{
+        const lect = '';
+    }
+
+    if (params.has('pg') && params.get('pg').trim() !== '') {
+        const pg = params.get('pg');
+    }else{
+        const pg = '';
+    }
+
+    document.getElementById('modalForm').setAttribute('action', `addGroup.php?lect=${lect}&pg=${pg}`);
+    document.getElementById("modalTitle").textContent = "Создать группу";
+    const modalBody = document.getElementById("modalBody");
+    
+    modalBody.innerHTML = `
+        <label for="name">Название:</label>
+        <input type="text" name="name" placeholder="Введите название группы" required>
+    `;
+
+    document.getElementById("modalSave").addEventListener("click", function(){
+        const name = this.querySelector('input[name="name"]').value.trim();
+        if (name !== "") {
+            document.getElementById("modalOverlay").className = "modal-overlay hidden";
         }
     })
 
