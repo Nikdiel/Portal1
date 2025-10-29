@@ -3,8 +3,6 @@ session_start();
 
 require_once "connect.php";
 
-$connection = new mysqli($host, $db_user, $db_password, $db_name);
-
 $answer = $_POST['q'];
 
 $a = "SELECT * FROM answers WHERE userId='" . $_SESSION['id'] . "' AND quetionId='" . $_GET['q'] . "'";

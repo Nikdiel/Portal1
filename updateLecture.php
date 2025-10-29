@@ -3,8 +3,6 @@ session_start();
 
 require "connect.php";
 
-$connection = new mysqli($host, $db_user, $db_password, $db_name);
-
 $sql = "SELECT * FROM lecture WHERE id = " . $_GET['li'];
 $res = $connection->query($sql);
 $row = $res->fetch_assoc();

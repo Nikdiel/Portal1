@@ -149,6 +149,22 @@ main {
   font-size: 20px;
 }
 
+.main-header ul{
+  padding: 0;
+  margin: 0 auto;
+  height: auto;
+}
+
+.main-header ul li{ 
+  display: none;
+}
+
+.main-header ul:hover li{
+  display: block;
+  position: relative;
+
+}
+
 .meta {
   color: var(--muted);
   font-size: 13px;
@@ -159,6 +175,7 @@ main {
 
 .lecture-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 

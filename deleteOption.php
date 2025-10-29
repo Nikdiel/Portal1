@@ -3,8 +3,6 @@ session_start();
 
 require "connect.php";
 
-$connection = new mysqli($host, $db_user, $db_password, $db_name);
-
 $opt = "DELETE FROM options WHERE id =" . $_GET['opt'];
 $connection->query($opt);
 

@@ -3,8 +3,8 @@ session_start();
 
 require "connect.php";
 
-$stmt = $connection->prepare("INSERT INTO `lecture` (`nameLecture`, `lectureContent`, `forGroup`, `adminId`) VALUES(?, ?, ?, ?)");
-$stmt->bind_param('sssi', $_POST['name'], $_POST['content'], $_POST['group'], $_SESSION['id']);
+$stmt = $connection->prepare("INSERT INTO `users_group` (`name`, `adminId`) VALUES(?, ?)");
+$stmt->bind_param('si', $_POST['name'], $_SESSION['id']);
 $stmt->execute();
 
 if (isset($_GET['lect'])) {

@@ -3,9 +3,7 @@ session_start();
 
 require "connect.php";
 
-$connection = new mysqli($host, $db_user, $db_password, $db_name);
-
-$correct = $_POST['radio'];
+$correct = (!empty($_POST['radio'])) ? $_POST['radio'] : '';
 
 $options = $connection->prepare("INSERT INTO `options` (`optionContent`, `quetionId`, `correctness`) VALUES (?, ?, ?)");
 

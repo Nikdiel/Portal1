@@ -3,8 +3,6 @@ session_start();
 
 require "connect.php";
 
-$connection = new mysqli($host, $db_user, $db_password, $db_name);
-
 $q = "SELECT * FROM quetions WHERE id=" . $_GET['q'];
 $resQ = $connection->query($q);
 $qCount = $resQ->num_rows;
