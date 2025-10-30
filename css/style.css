@@ -71,11 +71,20 @@ body,
   cursor: pointer;
   text-decoration: none;
 }
+.btn:hover{
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
 
 .btn.primary {
   background: rgba(255, 255, 255, 0.03);
-  color: var(--text);
   border-color: rgba(255, 255, 255, 0.06);
+}
+
+.btn.primary:hover {
+  background: rgba(255, 255, 255, 0.01);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.03);
   text-decoration: none;
 }
 
@@ -86,6 +95,11 @@ body,
 #btnNext, #btnPrev, #toLect, #showTotal{
   position: absolute;
   background-color: #2b2b2f;
+}
+
+#btnNext:hover, #btnPrev:hover, #toLect:hover, #showTotal:hover{
+  background-color: #494950;
+  color: #222;
 }
 
 #btnNext{
@@ -287,6 +301,42 @@ main {
   margin: 20px;
 }
 
+.lecture-text form {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  gap: 5px;
+}
+
+.lecture-text form input {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.lecture-text form input::placeholder {
+  color: #757575;
+}
+
+input{
+  height: 30px;
+  border-radius: 5px;
+  background-color: #2b2b2f;
+  color: #e6e6e6;
+  padding-left: 5px;
+  border-style: none; 
+}
+
+label{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 /* Questions */
 #check div{
   gap: 10px;
@@ -297,6 +347,7 @@ main {
   background: rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   margin-bottom: 5px;
+  cursor: pointer;
 }
 #check label:hover{
   background-color: rgba(0, 0, 0, 0.25);

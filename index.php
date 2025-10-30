@@ -60,47 +60,70 @@ $group = $row['group_name'];
 
       <div id="lecturesList" class="lectures-list">
         <?php
-        if ($status == 'admin') {
+        if ($status == 'admin' && empty($_GET['group'])) {
           $lectures = "SELECT * FROM lecture WHERE adminId='$userId'";
+        } elseif ($status == 'admin' && !empty($_GET['group'])) {
+          $selectedGroup = $_GET['group'];
+          $lectures = "SELECT * FROM lecture WHERE forGroup='$selectedGroup' AND adminId=" . $userId;
         } else {
           $lectures = "SELECT * FROM lecture WHERE forGroup='$group'";
         }
-
-        if ($lecturesResult = $connection->query($lectures)) {
-          $lecturesCount = $lecturesResult->num_rows;
-          // $lectureRow = $lectureResult->fetch_assoc();
-          if ($lecturesCount > 0) {
-            $il = 1;
-            echo ('<script>let lecture = []; let deleteBtnCount = 0;</script>');
-            while ($lecturesRow = mysqli_fetch_array($lecturesResult)) {
-              $q = "SELECT * FROM quetions WHERE lectureId='" . $lecturesRow['id'] . "'";
-              $res = $connection->query($q);
-              $qCount = $res->num_rows;
-              $pageLecture = (!empty($_GET['lect'])) ? '&lect=' . $_GET['lect'] . '&' : '';
-              $n = (!empty($_GET['pg'])) ? 'pg=' . $_GET['pg'] : '';
-              if ($status == 'admin') {
+        if ($status == 'admin' && !empty($_GET['group'])) {
+          if ($lecturesResult = $connection->query($lectures)) {
+            $lecturesCount = $lecturesResult->num_rows;
+            // $lectureRow = $lectureResult->fetch_assoc();
+            if ($lecturesCount > 0) {
+              while ($lecturesRow = mysqli_fetch_array($lecturesResult)) {
+                $q = "SELECT * FROM quetions WHERE lectureId='" . $lecturesRow['id'] . "'";
+                $res = $connection->query($q);
+                $qCount = $res->num_rows;
                 echo ('<div class="lecture-item">  
-                        <a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1" class="lecture-item-link">
-                          <div>' . $lecturesRow['nameLecture'] . '
-                          <div class="small">' . $qCount . ' вопрос(ов)</div>
-                        </div>
-                        </a>
-                          <div class="lecture-controls">
-                            <button class="icon-btn" id="updateLecture-' . $il . '">✎</button>
-                            <a class="icon-btn" href="deleteLecture.php?dl=' . $lecturesRow['id'] . $pageLecture . $n . '">🗑</a>
-                          </div>
+                          <a href="index.php?group=' . $_GET['group'] . '&gl=' . $lecturesRow['id'] . '">
+                            <div>' . $lecturesRow['nameLecture'] . '
+                              <div class="small">' . $qCount . ' вопрос(ов)</div>
+                            </div>
+                          </a>
                         </div>');
-                echo ('<script>lecture.push({id: ' . intval($il) . ', idLecture: ' . intval($lecturesRow['id']) . '}); deleteBtnCount++;</script>');
-              } else {
-                echo ('<div class="lecture-item"><a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1"><div>' . $lecturesRow['nameLecture'] . '<div class="small">' . $qCount . ' вопрос(ов)</div></div></a></div>');
               }
-              $il++;
             }
-          } else {
-            echo ('count is 0');
           }
         } else {
-          echo ('conn error');
+          if ($lecturesResult = $connection->query($lectures)) {
+            $lecturesCount = $lecturesResult->num_rows;
+            // $lectureRow = $lectureResult->fetch_assoc();
+            if ($lecturesCount > 0) {
+              $il = 1;
+              echo ('<script>let lecture = []; let deleteBtnCount = 0;</script>');
+              while ($lecturesRow = mysqli_fetch_array($lecturesResult)) {
+                $q = "SELECT * FROM quetions WHERE lectureId='" . $lecturesRow['id'] . "'";
+                $res = $connection->query($q);
+                $qCount = $res->num_rows;
+                $pageLecture = (!empty($_GET['lect'])) ? '&lect=' . $_GET['lect'] . '&' : '';
+                $n = (!empty($_GET['pg'])) ? 'pg=' . $_GET['pg'] : '';
+                if ($status == 'admin') {
+                  echo ('<div class="lecture-item">  
+                          <a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1" class="lecture-item-link">
+                            <div>' . $lecturesRow['nameLecture'] . '
+                            <div class="small">' . $qCount . ' вопрос(ов)</div>
+                          </div>
+                          </a>
+                            <div class="lecture-controls">
+                              <button class="icon-btn" id="updateLecture-' . $il . '">✎</button>
+                              <a class="icon-btn" href="deleteLecture.php?dl=' . $lecturesRow['id'] . $pageLecture . $n . '">🗑</a>
+                            </div>
+                          </div>');
+                  echo ('<script>lecture.push({id: ' . intval($il) . ', idLecture: ' . intval($lecturesRow['id']) . '}); deleteBtnCount++;</script>');
+                } else {
+                  echo ('<div class="lecture-item"><a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1"><div>' . $lecturesRow['nameLecture'] . '<div class="small">' . $qCount . ' вопрос(ов)</div></div></a></div>');
+                }
+                $il++;
+              }
+            } else {
+              echo ('count is 0');
+            }
+          } else {
+            echo ('conn error');
+          }
         }
         ?>
 
@@ -125,7 +148,7 @@ $group = $row['group_name'];
           ?></h1>
         <div class="meta">
           <?php
-          if ($status == 'admin' && !empty($_GET['lect'])) {
+          if ($status == 'admin' && !empty($_GET['lect']) && empty($_GET['group'])) {
             echo ('<span id="lectureMeta"></span>
             <div id="lectureActions" class="lecture-actions"><button class="btn" id="addQuetion">Добавить вопрос</button>'); ?>
             <ul class="menu">
@@ -148,7 +171,7 @@ $group = $row['group_name'];
             </ul>
           <?php
             echo ('</div>');
-          } elseif ($status == 'admin' && empty($_GET['lect'])) {
+          } elseif ($status == 'admin' && empty($_GET['lect']) && empty($_GET['group'])) {
           ?>
             <ul class="menu">
               <li class="menu-item">Группы
@@ -169,7 +192,30 @@ $group = $row['group_name'];
               </li>
             </ul>
           <?php
-          }         // <a class="btn primary" href="adminPanel.php">Панель</a>
+          } elseif ($status == 'admin' && !empty($_GET['group'])) {
+            echo ('<span id="lectureMeta"></span>
+            <div id="lectureActions" class="lecture-actions"><a href="index.php" class="btn">Главная</a>'); ?>
+            <ul class="menu">
+              <li class="menu-item">Группы
+                <ul class="submenu">
+                  <?php
+                  $allGroup = "SELECT * FROM users_group WHERE adminId = $userId";
+                  $agRes = $connection->query($allGroup);
+                  $agCount = $agRes->num_rows;
+                  if ($agCount > 0) {
+                    while ($agRow = mysqli_fetch_array($agRes)) {
+                      echo ('<li><a href="index.php?group=' . $agRow['name'] . '">' . $agRow['name'] . '</a></li>');
+                    }
+                    echo ('<li><button id="addGroupBtn" class="btn primary">Добавить</button></li>');
+                  }
+                  //<a href="addGroup.php?lect=' . $_GET['lect'] . $n . '">
+                  ?>
+                </ul>
+              </li>
+            </ul>
+          <?php
+            echo ('</div>');
+          }     // <a class="btn primary" href="adminPanel.php">Панель</a>
           ?>
         </div>
       </header>
@@ -205,7 +251,7 @@ $group = $row['group_name'];
               echo ('<div class="navigation">
                     <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '" style="visibility: hidden;">Предыдущая</a>');
               if ($quetionCount > 0) {
-                echo ('<a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '" style="position:fixed; background-color: #131313ff;padding:15px;font-size:15px;">Следующая</a>
+                echo ('<a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '" style="position:fixed;padding:10px;font-size:15px;">Следующая</a>
                       </div>');
               } else {
                 echo ('</div');
@@ -382,7 +428,11 @@ $group = $row['group_name'];
               } else {
                 echo ('<form id="check" method="post" action="test.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg'] . '&q=' . $pageContent[$_GET['pg'] - 1]['id'] . '">');
                 while ($optRow = mysqli_fetch_array($optResult)) {
-                  echo ('<label><input type="radio" class="quetion" name="q" value="' . $optRow['correctness'] . '" required>' . $optRow['optionContent'] . '</label>');
+                  if ($status == 'admin') {
+                    echo ('<label><input type="radio" class="quetion" name="q" value="' . $optRow['correctness'] . '" required>' . $optRow['optionContent'] . '<a class="btn primary" href="deleteOption.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg'] . '&opt=' . $optRow['id'] . '" style="position:relative;float:right;height:20px;padding:0px 5px;">🗑</a></label>');
+                  } else {
+                    echo ('<label><input type="radio" class="quetion" name="q" value="' . $optRow['correctness'] . '" required>' . $optRow['optionContent'] . "</label>");
+                  }
                 }
                 if ($status == 'admin') {
                   echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button" style="margin: 10px 0;">Добавить варианты</button>');
@@ -410,6 +460,59 @@ $group = $row['group_name'];
                     <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
                     <a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '">Следующая</a>
                   </div>');
+          }
+        } elseif (!empty($_GET['group'])) {
+          if (!empty($_GET['gl'])) {
+            echo ('<table aria-label="Таблица оценок студентов">
+                <thead>
+                  <tr>
+                    <th>Студент</th>
+                    <th>Время</th>
+                    <th>Балл</th>
+                  </tr>
+                </thead>
+                <tbody>');
+            $users = "SELECT * FROM users WHERE group_name='$selectedGroup' AND createrAdmin = $userId";
+            $usersRes = $connection->query($users);
+            $usersCount = $usersRes->num_rows;
+            if ($usersCount > 0) {
+              while ($userRow = mysqli_fetch_array($usersRes)) {
+                $total = "SELECT * FROM total WHERE userId=" . $userRow['id'] . " AND lectureId=" . $_GET['gl'];
+                $totalRes = $connection->query($total);
+                $totalRow = $totalRes->fetch_assoc();
+                if (isset($totalRow['datatime']) && isset($totalRow['mark'])) {
+                  echo '<tr>
+                          <td>' . $userRow['surname'] . ' ' . $userRow['name'] . '</td>
+                          <td class="time">' . $totalRow['datatime'] . '</td>
+                          <td class="score">' . $totalRow['mark'] . '</td>
+                        </tr>';
+                } else {
+                  echo '<tr>
+                          <td>' . $userRow['surname'] . ' ' . $userRow['name'] . '</td>
+                          <td class="time"></td>
+                          <td class="score">Нет результата</td>
+                        </tr>';
+                }
+              }
+            }
+            echo ('</tbody>
+              </table>');
+          } else {
+            echo ('<div id="lectureText" class="lecture-text">
+              <form action="addUser.php?group=' . $_GET['group'] . '" method="POST">
+                <label for="name">Имя</label>
+                <input type="text" name="name" placeholder="Введите имя" required>
+                <label for="surname">Фамилия</label>
+                <input type="text" name="surname" placeholder="Введите фамилия" required>
+                <label for="password">Пароль</label>
+                <input type="text" name="password" placeholder="Введите пароль" required>
+                <label for="group">Группа</label>
+                <input type="text" name="group" placeholder="Введите группу">
+                <label for="status"><input type="radio" name="status" value="user" required checked>Студент</label>
+                <label for="status"><input type="radio" name="status" value="admin" required>Учитель</label>
+                <button type="submit" class="btn primary">Создать пользователя</button>
+              </form>
+            </div>');
           }
         } else {
           echo ('<div id="lectureText" class="lecture-text">Выберите лекцию в панели лекций</div>');
