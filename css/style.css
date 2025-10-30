@@ -575,6 +575,69 @@ textarea {
   }
 }
 
+table[aria-label="Таблица оценок студентов"] {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--panel);
+  color: var(--text);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Заголовки */
+table[aria-label="Таблица оценок студентов"] thead {
+  background-color: var(--accent);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+table[aria-label="Таблица оценок студентов"] th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 500;
+  border: 2px solid #2f2f33;
+}
+
+/* Ячейки */
+table[aria-label="Таблица оценок студентов"] td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #2a2a2e;
+  vertical-align: middle;
+}
+
+/* Полосатая заливка строк */
+table[aria-label="Таблица оценок студентов"] tbody tr:nth-child(even) {
+  background-color: #1a1a1c;
+}
+
+/* При наведении */
+table[aria-label="Таблица оценок студентов"] tbody tr:hover {
+  background-color: #222225;
+  transition: background 0.2s ease;
+}
+
+/* Время и баллы */
+table[aria-label="Таблица оценок студентов"] td.time {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+table[aria-label="Таблица оценок студентов"] td.score {
+  text-align: center;
+  font-weight: 600;
+  color: #d3d3d3;
+}
+
+/* “Нет результата” */
+table[aria-label="Таблица оценок студентов"] td.score:contains("Нет результата") {
+  color: #777;
+  font-style: italic;
+}
+
+
 @media (max-width: 600px) {
   .lecture-item {
     flex: 1 0 100%;

@@ -78,7 +78,7 @@ $group = $row['group_name'];
                 $res = $connection->query($q);
                 $qCount = $res->num_rows;
                 echo ('<div class="lecture-item">  
-                          <a href="index.php?group=' . $_GET['group'] . '&gl=' . $lecturesRow['id'] . '">
+                          <a href="index.php?group=' . $_GET['group'] . '&gl=' . $lecturesRow['id'] . '" style="width:100%;">
                             <div>' . $lecturesRow['nameLecture'] . '
                               <div class="small">' . $qCount . ' вопрос(ов)</div>
                             </div>
