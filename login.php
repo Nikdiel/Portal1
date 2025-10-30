@@ -12,11 +12,11 @@
     <div class="glass-wrapper">
         <form action="loginValidation.php" method="post" class="glass-form">
             <label for="name">Имя</label>
-            <input type="text" name="name" placeholder="Введите имя">
+            <input type="text" name="name" placeholder="Введите имя" required>
             <label for="surname">Фамилия</label>
-            <input type="text" name="surname" placeholder="Введите фамилия">
+            <input type="text" name="surname" placeholder="Введите фамилия" required>
             <label for="password">Пароль</label>
-            <input type="text" name="password" placeholder="Введите пароль">
+            <input type="text" name="password" placeholder="Введите пароль" required>
             <button type="submit" class="btn primary">Войти</button>
         </form>
     </div>

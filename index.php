@@ -41,6 +41,7 @@ $group = $row['group_name'];
       <div class="sidebar-header">
         <h2>Лекции</h2>
 
+
         <!-- Админ-кнопки -->
 
         <div class="admin-controls" id="adminControls">
@@ -49,8 +50,9 @@ $group = $row['group_name'];
             echo ('<button id="btnAddLecture" class="btn primary">+</button>
               <a id="btnLogoutAdmin" class="btn danger" href="logout.php">Выйти</a>');
           } else {
-            echo ('<a id="btnEnableAdmin" class="btn" href="login.php">Включить админ</a>');
+            echo ('<a id="btnLogoutAdmin" class="btn danger" href="logout.php">Выйти</a>');
           }
+
           ?>
 
         </div>
@@ -69,17 +71,28 @@ $group = $row['group_name'];
           // $lectureRow = $lectureResult->fetch_assoc();
           if ($lecturesCount > 0) {
             $il = 1;
-            echo ('<script>let lecture = []</script>');
+            echo ('<script>let lecture = []; let deleteBtnCount = 0;</script>');
             while ($lecturesRow = mysqli_fetch_array($lecturesResult)) {
               $q = "SELECT * FROM quetions WHERE lectureId='" . $lecturesRow['id'] . "'";
               $res = $connection->query($q);
               $qCount = $res->num_rows;
-              $n = (!empty($_GET['pg'])) ? '&pg=' . $_GET['pg'] : '';
+              $pageLecture = (!empty($_GET['lect'])) ? '&lect=' . $_GET['lect'] . '&' : '';
+              $n = (!empty($_GET['pg'])) ? 'pg=' . $_GET['pg'] : '';
               if ($status == 'admin') {
-                echo ('<div class="lecture-item"><a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1"><div>' . $lecturesRow['nameLecture'] . '</div><div class="small">' . $qCount . ' вопрос(ов)</div></a><div class="lecture-controls"><button class="icon-btn" id="updateLecture-' . $il . '">✎</button><a class="icon-btn" href="deleteLecture.php?lect=' . $lecturesRow['id'] . $n . '">🗑</a></div></div>');
-                echo ('<script>lecture.push({id: ' . intval($il) . ', idLecture: ' . intval($lecturesRow['id']) . '})</script>');
+                echo ('<div class="lecture-item">  
+                        <a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1" class="lecture-item-link">
+                          <div>' . $lecturesRow['nameLecture'] . '
+                          <div class="small">' . $qCount . ' вопрос(ов)</div>
+                        </div>
+                        </a>
+                          <div class="lecture-controls">
+                            <button class="icon-btn" id="updateLecture-' . $il . '">✎</button>
+                            <a class="icon-btn" href="deleteLecture.php?dl=' . $lecturesRow['id'] . $pageLecture . $n . '">🗑</a>
+                          </div>
+                        </div>');
+                echo ('<script>lecture.push({id: ' . intval($il) . ', idLecture: ' . intval($lecturesRow['id']) . '}); deleteBtnCount++;</script>');
               } else {
-                echo ('<div class="lecture-item"><a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1">' . $lecturesRow['nameLecture'] . '</a></div>');
+                echo ('<div class="lecture-item"><a href="index.php?lect=' . $lecturesRow['id'] . '&pg=1"><div>' . $lecturesRow['nameLecture'] . '<div class="small">' . $qCount . ' вопрос(ов)</div></div></a></div>');
               }
               $il++;
             }
@@ -96,24 +109,67 @@ $group = $row['group_name'];
 
     <main id="main">
       <header class="main-header">
-        <h1 id="lectureTitle">Лекция:</h1>
+        <h1 id="lectureTitle">
+          <?php
+          if (!empty($_GET['pg']) && $_GET['pg'] == 1) {
+            echo ('Лекция:');
+          } elseif (!empty($_GET['pg']) && $_GET['pg'] > 1) {
+            echo ('Вопрос:');
+          } elseif (!empty($_GET['pg']) && $_GET['pg'] == 'result') {
+            echo ('Результат:');
+          } elseif (!empty($_GET['group'])) {
+            echo ('Группа:');
+          } else {
+            echo ('Главная');
+          }
+          ?></h1>
         <div class="meta">
           <?php
           if ($status == 'admin' && !empty($_GET['lect'])) {
             echo ('<span id="lectureMeta"></span>
             <div id="lectureActions" class="lecture-actions"><button class="btn" id="addQuetion">Добавить вопрос</button>'); ?>
-            <ul>Группы
-
-              <?php
-              $n = (!empty($_GET['pg'])) ? '&pg=' . $_GET['pg'] : '';
-              echo ('<li><button id="addGroupBtn" class="btn primary">Добавить</button></li>');
-              //<a href="addGroup.php?lect=' . $_GET['lect'] . $n . '">
-              ?>
-
+            <ul class="menu">
+              <li class="menu-item">Группы
+                <ul class="submenu">
+                  <?php
+                  $allGroup = "SELECT * FROM users_group WHERE adminId = $userId";
+                  $agRes = $connection->query($allGroup);
+                  $agCount = $agRes->num_rows;
+                  if ($agCount > 0) {
+                    while ($agRow = mysqli_fetch_array($agRes)) {
+                      echo ('<li><a href="index.php?group=' . $agRow['name'] . '">' . $agRow['name'] . '</a></li>');
+                    }
+                    echo ('<li><button id="addGroupBtn" class="btn primary">Добавить</button></li>');
+                  }
+                  //<a href="addGroup.php?lect=' . $_GET['lect'] . $n . '">
+                  ?>
+                </ul>
+              </li>
             </ul>
           <?php
             echo ('</div>');
-          }          // <a class="btn primary" href="adminPanel.php">Панель</a>
+          } elseif ($status == 'admin' && empty($_GET['lect'])) {
+          ?>
+            <ul class="menu">
+              <li class="menu-item">Группы
+                <ul class="submenu">
+                  <?php
+                  $allGroup = "SELECT * FROM users_group WHERE adminId = $userId";
+                  $agRes = $connection->query($allGroup);
+                  $agCount = $agRes->num_rows;
+                  if ($agCount > 0) {
+                    while ($agRow = mysqli_fetch_array($agRes)) {
+                      echo ('<li><a href="index.php?group=' . $agRow['name'] . '">' . $agRow['name'] . '</a></li>');
+                    }
+                    echo ('<li><button id="addGroupBtn" class="btn primary">Добавить</button></li>');
+                  }
+                  //<a href="addGroup.php?lect=' . $_GET['lect'] . $n . '">
+                  ?>
+                </ul>
+              </li>
+            </ul>
+          <?php
+          }         // <a class="btn primary" href="adminPanel.php">Панель</a>
           ?>
         </div>
       </header>
@@ -145,11 +201,11 @@ $group = $row['group_name'];
 
           if (!empty($_GET['pg'])) {
             if ($_GET['pg'] == 1) {
-              echo ('<div id="lectureText" class="lecture-text">' . $lectureRow['lectureContent'] . '</div>');
+              echo ('<div id="lectureText" class="lecture-text"><p>' . $lectureRow['lectureContent'] . '</p></div>');
               echo ('<div class="navigation">
                     <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '" style="visibility: hidden;">Предыдущая</a>');
               if ($quetionCount > 0) {
-                echo ('<a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '">Следующая</a>
+                echo ('<a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '" style="position:fixed; background-color: #131313ff;padding:15px;font-size:15px;">Следующая</a>
                       </div>');
               } else {
                 echo ('</div');
@@ -182,19 +238,32 @@ $group = $row['group_name'];
                 }
 
                 if ($status == 'admin') {
-                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button">Добавить варианты</button>');
+                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button" style="margin: 10px 0;">Добавить варианты</button>');
                 }
 
                 if ($answersRow['correct'] == 1) {
-                  echo ('<h4>Вы ответили верно на этот вопросы<span>✔️</span></h4></form>');
+                  echo ('<h4 class="correct">Вы ответили верно на этот вопросы<span>✔️</span></h4></form>');
                 } else {
-                  echo ('<h4>Вы ответили неверно на этот вопрос<span>❌</span></h4></form>');
+                  echo ('<h4 class="wrong">Вы ответили неверно на этот вопрос<span>❌</span></h4></form>');
                 }
 
-                echo ('<div class="navigation">
+                $show = "SELECT * FROM answers WHERE lectureId =" . $_GET['lect'] . " AND userId = $userId";
+                $shRes = $connection->query($show);
+                $shCount = $shRes->num_rows;
+
+                if ((count($pageContent) - 1) == intval($shCount)) {
+                  echo ('<div class="navigation">
                     <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '">Предыдущая</a>
-                    <a class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=result">Показать результат</a>
+                    <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
+                    <a id="showTotal" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=result">Показать результат</a>
                     </div>');
+                } else {
+                  echo ('<div class="navigation">
+                    <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '">Предыдущая</a>
+                    <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
+                    </div>');
+                  echo ((count($pageContent) - 1) . intval($shCount));
+                }
               } else {
                 echo ('<form id="check" method="post" action="test.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg'] . '&q=' . $pageContent[$_GET['pg'] - 1]['id'] . '">');
                 while ($optRow = mysqli_fetch_array($optResult)) {
@@ -205,7 +274,7 @@ $group = $row['group_name'];
                   }
                 }
                 if ($status == 'admin') {
-                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button">Добавить варианты</button>');
+                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button" style="margin: 10px 0;">Добавить варианты</button>');
                 }
 
                 if ($optCount > 0) {
@@ -214,10 +283,22 @@ $group = $row['group_name'];
                   echo ('<h4>Нет вариантов ответа</h4></form>');
                 }
 
-                echo ('<div class="navigation">
+                $show = "SELECT * FROM answers WHERE lectureId =" . $_GET['lect'] . " AND userId = $userId";
+                $shRes = $connection->query($show);
+                $shCount = $shRes->num_rows;
+
+                if ((count($pageContent) - 1) == intval($shCount)) {
+                  echo ('<div class="navigation">
                     <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '">Предыдущая</a>
-                    <a class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=result">Показать результат</a>
+                    <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
+                    <a id="showTotal" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=result">Показать результат</a>
                     </div>');
+                } else {
+                  echo ('<div class="navigation" style="justify-content:left;">
+                    <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '">Предыдущая</a>
+                    <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
+                    </div>');
+                }
               }
             } elseif ($_GET['pg'] == 'result') {
               $allQ = count($pageContent) - 1;
@@ -284,17 +365,18 @@ $group = $row['group_name'];
                   }
                 }
                 if ($status == 'admin') {
-                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button">Добавить варианты</button>');
+                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button" style="margin: 10px 0;">Добавить варианты</button>');
                 }
 
                 if ($answersRow['correct'] == 1) {
-                  echo ('<h4>Вы ответили верно на этот вопрос<span>✔️</span></h4></form>');
+                  echo ('<h4 class="correct">Вы ответили верно на этот вопрос<span>✔️</span></h4></form>');
                 } else {
-                  echo ('<h4>Вы ответили неверно на этот вопрос<span>❌</span></h4></form>');
+                  echo ('<h4 class="wrong">Вы ответили неверно на этот вопрос<span>❌</span></h4></form>');
                 }
 
                 echo ('<div class="navigation">
                   <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '">Предыдущая</a>
+                  <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
                   <a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '">Следующая</a>
                   </div>');
               } else {
@@ -303,7 +385,7 @@ $group = $row['group_name'];
                   echo ('<label><input type="radio" class="quetion" name="q" value="' . $optRow['correctness'] . '" required>' . $optRow['optionContent'] . '</label>');
                 }
                 if ($status == 'admin') {
-                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button">Добавить варианты</button>');
+                  echo ('<button id="addOptions" data-id="' . $pageContent[$_GET['pg'] - 1]['id']  . '" class="btn primary" type="button" style="margin: 10px 0;">Добавить варианты</button>');
                 }
                 if ($optCount > 0) {
                   echo ('<button type="submit" class="btn primary" id="submitBtn">Проверить</button></form>');
@@ -313,6 +395,7 @@ $group = $row['group_name'];
 
                 echo ('<div class="navigation">
                   <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '">Предыдущая</a>
+                  <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
                   <a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '">Следующая</a>
                   </div>');
               }
@@ -324,6 +407,7 @@ $group = $row['group_name'];
             echo ('<div id="lectureText" class="lecture-text">' . $lectureRow['lectureContent'] . '</div>');
             echo ('<div class="navigation">
                     <a id="btnPrev" class="btn"href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '">Предыдущая</a>
+                    <a id="toLect" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=1">К лекции</a>
                     <a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '">Следующая</a>
                   </div>');
           }

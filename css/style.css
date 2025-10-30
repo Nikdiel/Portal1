@@ -76,12 +76,37 @@ body,
   background: rgba(255, 255, 255, 0.03);
   color: var(--text);
   border-color: rgba(255, 255, 255, 0.06);
-  margin-left: 5px;
   text-decoration: none;
 }
 
 .btn:active {
   transform: translateY(1px);
+}
+
+#btnNext, #btnPrev, #toLect, #showTotal{
+  position: absolute;
+  background-color: #2b2b2f;
+}
+
+#btnNext{
+  right: 80px;
+  bottom: 50px;
+}
+
+#btnPrev{
+  left: 80px;
+  bottom: 50px;
+}
+
+#toLect{
+  bottom: 50px;
+  left: 50%;           
+  transform: translateX(-50%);
+}
+
+#showTotal{
+  right: 80px;
+  bottom: 50px;
 }
 
 .lectures-list {
@@ -90,6 +115,12 @@ body,
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.lectures-list a{
+  text-decoration: none;
+  color: var(--text);
+  position: relative;
 }
 
 /* Lecture item */
@@ -101,8 +132,13 @@ body,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
   background: rgba(255, 255, 255, 0.10);
+  position: relative;
+}
+
+.lecture-item a{
+  width: 76%;
+  overflow: hidden;
 }
 
 .lecture-item:hover {
@@ -112,19 +148,13 @@ body,
 .lecture-item.active {
   background: rgba(255, 255, 255, 0.02);
 }
-.lecture-item a{
-  text-decoration: none;
-  color: #fff;
-}
 
 .lecture-title-small {
   font-size: 14px;
   color: var(--text);
 }
-
-.lecture-controls button {
-  margin-left: 6px;
-  font-size: 12px;
+.lecture-controls{
+  width: 53px;
 }
 
 /* Main */
@@ -149,20 +179,65 @@ main {
   font-size: 20px;
 }
 
-.main-header ul{
+.menu {
+  list-style: none;
+  margin: 0;
   padding: 0;
-  margin: 0 auto;
-  height: auto;
-}
-
-.main-header ul li{ 
-  display: none;
-}
-
-.main-header ul:hover li{
-  display: block;
+  background: #121214;
   position: relative;
+}
 
+.menu-item {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  color: white;
+  cursor: pointer;
+  padding: 10px 15px;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  list-style: none;
+  right: 0;
+  top: 100%; 
+  background: #121214;
+  border-radius: 0 0 0 10px;
+  z-index: 10;
+  padding: 0;
+}
+
+.submenu li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.submenu li a{
+  text-decoration: none;
+  padding: 10px;
+  color: var(--text);
+}
+
+.submenu li:last-child{
+  padding-bottom: 15px;
+  border-radius: 0 0 0 10px;
+  padding:10px;
+}
+
+.submenu li:hover{
+  background-color: #222;
+}
+
+.submenu li:last-child:hover{
+  background-color: #121214;
+}
+
+.menu-item:hover .submenu {
+  display: block;
 }
 
 .meta {
@@ -186,6 +261,7 @@ main {
   border-radius: 10px;
   flex: 1;
   overflow: auto;
+  position: relative;
 }
 .total{
   height: 100%;
@@ -203,14 +279,19 @@ main {
   margin: 10px 0;
 }
 
-.lecture-text {
+.lecture-text{
   white-space: pre-wrap;
-  color: var(--text);
+  overflow-wrap: break-word;
+  color: #d6d6d6;
   line-height: 1.6;
   margin: 20px;
 }
 
 /* Questions */
+#check div{
+  gap: 10px;
+}
+
 #check label {
   padding: 12px;
   background: rgba(0, 0, 0, 0.12);
@@ -223,9 +304,7 @@ main {
 
 #check h4{
   height: 60px;
-  border: 2px solid #666;
   border-radius: 8px;
-  background-color: #444;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -262,12 +341,14 @@ main {
   font-weight: 600;
 }
 
-.result.correct {
-  color: var(--success);
+.correct {
+  background-color: #444;
+  border: 2px solid #666;
 }
 
-.result.wrong {
-  color: var(--danger);
+.wrong {
+  background-color: #482f2f;
+   border: 2px solid #845555;
 }
 
 /* navigation */
@@ -275,6 +356,7 @@ main {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  gap: 10px;
 }
 
 /* modal */
