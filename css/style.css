@@ -169,6 +169,8 @@ body,
 }
 .lecture-controls{
   width: 53px;
+  display: flex;
+  gap: 3px;
 }
 
 /* Main */
@@ -183,7 +185,7 @@ main {
 .main-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   margin-bottom: 12px;
 }
@@ -191,6 +193,16 @@ main {
 .main-header h1 {
   margin: 0;
   font-size: 20px;
+}
+
+.main-header>div:first-child{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#showBar{
+  display: none;
 }
 
 .menu {
@@ -216,10 +228,10 @@ main {
   position: absolute;
   list-style: none;
   right: 0;
-  top: 100%; 
+  top: 48px; 
   background: #121214;
   border-radius: 0 0 0 10px;
-  z-index: 10;
+  z-index: 5;
   padding: 0;
 }
 
@@ -293,12 +305,31 @@ main {
   margin: 10px 0;
 }
 
+.lecture-content form div{
+  white-space: nowrap;
+  display: flex;
+}
+
 .lecture-text{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   color: #d6d6d6;
-  line-height: 1.6;
-  margin: 20px;
+  line-height: 1.6; 
+  gap: 10px;
+}
+
+.lecture-text span{
+  padding: 10px;
+}
+
+.lecture-text>a{
+  width: 100%;
+  text-align: center;
+  margin: 0;
 }
 
 .lecture-text form {
@@ -306,6 +337,7 @@ main {
   flex-direction: column;
   color: #fff;
   gap: 5px;
+  width: 100%;
 }
 
 .lecture-text form input {
@@ -335,6 +367,9 @@ label{
   display: flex;
   align-items: center;
   gap: 20px;
+}
+.lecture-text button{
+  margin-top: 20px;
 }
 
 /* Questions */
@@ -418,7 +453,7 @@ label{
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 10;
 }
 
 .modal {
@@ -510,71 +545,6 @@ textarea {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* ============================= */
-/* 📱 Мобильная адаптация        */
-/* ============================= */
-
-@media (max-width: 900px) {
-  #app {
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  #sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .sidebar-header {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 8px;
-  }
-
-  .lectures-list {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    max-height: none;
-  }
-
-  .lecture-item {
-    flex: 1 0 45%;
-    text-align: center;
-    padding: 8px;
-  }
-
-  main {
-    padding: 12px;
-  }
-
-  .main-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .lecture-content {
-    padding: 12px;
-  }
-
-  button,
-  .btn {
-    font-size: 15px;
-    padding: 8px 12px;
-  }
-
-  .input,
-  textarea {
-    font-size: 15px;
-  }
-}
-
 table[aria-label="Таблица оценок студентов"] {
   width: 100%;
   border-collapse: collapse;
@@ -636,26 +606,6 @@ table[aria-label="Таблица оценок студентов"] td.score:cont
   color: #777;
   font-style: italic;
 }
-
-
-@media (max-width: 600px) {
-  .lecture-item {
-    flex: 1 0 100%;
-    font-size: 15px;
-  }
-
-  .main-header h1 {
-    font-size: 18px;
-  }
-
-  .lecture-text {
-    font-size: 15px;
-  }
-
-  .question p {
-    font-size: 15px;
-  }
-}
 .result-summary {
   margin-top: 12px;
   background: rgba(0,0,0,0.25);
@@ -692,4 +642,161 @@ table[aria-label="Таблица оценок студентов"] td.score:cont
 .btn.danger:hover {
   background: #222;
   color: #ff8888;
+}
+
+/* ============================= */
+/* 📱 Мобильная адаптация        */
+/* ============================= */
+
+
+
+@media (max-width: 900px) {
+  #app {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  #sidebar {
+    width: 247px;
+    position: fixed;
+    top: 0;
+    left: -247px; 
+    height: 100vh;
+    transition: left 0.3s ease;
+    z-index: 8;
+    overflow-y: auto;
+  }
+
+  #sidebar.active {
+    left: 0; 
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 7;
+  }
+
+  .overlay.active {
+    opacity: 1;
+    pointer-events: all; 
+  }
+
+  #showBar{
+    display: block;
+  }
+  
+  .sidebar-header {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .lecture-item {
+    padding: 8px;
+  }
+
+  main {
+    padding: 12px;
+  }
+
+  .main-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .lecture-content {
+    padding: 12px;
+  }
+
+  button,
+  .btn {
+    font-size: 15px;
+    padding: 8px 12px;
+  }
+
+  .input,
+  textarea {
+    font-size: 15px;
+  }
+
+  #btnNext{
+    right: 50px;
+  }
+
+  #btnPrev{
+    left: 50px;
+  }
+
+  #toLect{
+    left: 50%;           
+    transform: translateX(-50%);
+  }
+
+  #showTotal{
+    right: 50px;
+  }
+}
+
+@media (max-width: 600px) {
+  .lecture-item {
+    font-size: 15px;
+  }
+
+  .main-header h1 {
+    font-size: 18px;
+  }
+
+  .lecture-text {
+    font-size: 15px;
+  }
+
+  .question p {
+    font-size: 15px;
+  }
+
+  .modal{
+    width: 300px;
+  } 
+
+  #btnNext{
+    right: 20px;
+    bottom: 10px;
+  }
+
+  #btnNext.firstPage{
+    right: 15px;
+    bottom: 30px;
+  }
+
+  #btnPrev{
+    left: 20px;
+    bottom: 10px;
+  }
+
+  #toLect{
+    left: 50%;           
+    transform: translateX(-50%);
+    bottom: 10px;
+  }
+
+  #showTotal{
+    right: 20px;
+    bottom: 10px;
+  }
+
+  th{
+    font-size: 14px;
+  }
+
+  td{
+    font-size: 12px;
+  }
 }

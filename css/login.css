@@ -44,7 +44,7 @@ body{
 .glass-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 13px;
   width: 300px;
   color: #fff;
 }
@@ -83,7 +83,22 @@ label{
   background: rgba(255, 255, 255, 0.03);
   color: var(--text);
   border-color: rgba(255, 255, 255, 0.06);
-  margin-left: 5px;
   text-decoration: none;
   border-radius: 5px;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+@media (max-width:600px) {
+  .glass-wrapper{
+    width: 250px;
+    padding: 20px;
+  }
+  .glass-form{
+    width: auto;
+    gap: 5px;
+  }
+  button{
+    margin-top: 5px;
+  }
 }

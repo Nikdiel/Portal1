@@ -130,22 +130,28 @@ $group = $row['group_name'];
       </div>
     </aside>
 
+    <div class="overlay"></div>
+
     <main id="main">
       <header class="main-header">
-        <h1 id="lectureTitle">
-          <?php
-          if (!empty($_GET['pg']) && $_GET['pg'] == 1) {
-            echo ('Лекция:');
-          } elseif (!empty($_GET['pg']) && $_GET['pg'] > 1) {
-            echo ('Вопрос:');
-          } elseif (!empty($_GET['pg']) && $_GET['pg'] == 'result') {
-            echo ('Результат:');
-          } elseif (!empty($_GET['group'])) {
-            echo ('Группа:');
-          } else {
-            echo ('Главная');
-          }
-          ?></h1>
+        <div>
+          <button id="showBar" class="btn primary">☰</button>
+          <h1 id="lectureTitle">
+            <?php
+            if (!empty($_GET['pg']) && $_GET['pg'] == 1) {
+              echo ('Лекция:');
+            } elseif (!empty($_GET['pg']) && $_GET['pg'] > 1) {
+              echo ('Вопрос:');
+            } elseif (!empty($_GET['pg']) && $_GET['pg'] == 'result') {
+              echo ('Результат:');
+            } elseif (!empty($_GET['group'])) {
+              echo ('Группа:');
+            } else {
+              echo ('Главная');
+            }
+            ?></h1>
+        </div>
+
         <div class="meta">
           <?php
           if ($status == 'admin' && !empty($_GET['lect']) && empty($_GET['group'])) {
@@ -194,7 +200,11 @@ $group = $row['group_name'];
           <?php
           } elseif ($status == 'admin' && !empty($_GET['group'])) {
             echo ('<span id="lectureMeta"></span>
-            <div id="lectureActions" class="lecture-actions"><a href="index.php" class="btn">Главная</a>'); ?>
+            <div id="lectureActions" class="lecture-actions"><a id="homeBtn" href="index.php" class="btn">Главная</a>');
+            if (!empty($_GET['gl'])) {
+              echo '<a id="addUser" href="index.php?group=' . $_GET['group'] . '" class="btn">Добавить пользователя</a></a>';
+            }
+          ?>
             <ul class="menu">
               <li class="menu-item">Группы
                 <ul class="submenu">
@@ -251,14 +261,14 @@ $group = $row['group_name'];
               echo ('<div class="navigation">
                     <a id="btnPrev" class="btn" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  - 1 . '" style="visibility: hidden;">Предыдущая</a>');
               if ($quetionCount > 0) {
-                echo ('<a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '" style="position:fixed;padding:10px;font-size:15px;">Следующая</a>
+                echo ('<a id="btnNext" class="btn primary" href="index.php?lect=' . $selectedLectureId . '&pg=' . $_GET['pg']  + 1 . '" style="position:fixed;padding:10px;font-size:15px;right:50px;">Следующая</a>
                       </div>');
               } else {
                 echo ('</div');
               }
             } elseif ($_GET['pg'] == count($pageContent)) {
               if ($status == 'admin') {
-                echo ('<div id="lectureText" class="lecture-text">' . $pageContent[$_GET['pg'] - 1]['content'] . '<a href="deleteQuetion.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg'] . '&q=' . $pageContent[$_GET['pg'] - 1]['id'] . '" class="btn primary" style="position:relative; float:right;">удалить вопрос</a></div>');
+                echo ('<div id="lectureText" class="lecture-text"><span>' . $pageContent[$_GET['pg'] - 1]['content'] . '</span><a href="deleteQuetion.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg'] . '&q=' . $pageContent[$_GET['pg'] - 1]['id'] . '" class="btn primary">удалить вопрос</a></div>');
               } else {
                 echo ('<div id="lectureText" class="lecture-text">' . $pageContent[$_GET['pg'] - 1]['content'] . '</div>');
               }
@@ -387,7 +397,7 @@ $group = $row['group_name'];
                   ');
             } else {
               if ($status == 'admin') {
-                echo ('<div id="lectureText" class="lecture-text">' . $pageContent[$_GET['pg'] - 1]['content'] . '<a href="deleteQuetion.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg'] . '&q=' . $pageContent[$_GET['pg'] - 1]['id'] . '" class="btn primary" style="position:relative; float:right;">удалить вопрос</a></div>');
+                echo ('<div id="lectureText" class="lecture-text"><span>' . $pageContent[$_GET['pg'] - 1]['content'] . '</span><a href="deleteQuetion.php?lect=' . $_GET['lect'] . '&pg=' . $_GET['pg'] . '&q=' . $pageContent[$_GET['pg'] - 1]['id'] . '" class="btn primary">удалить вопрос</a></div>');
               } else {
                 echo ('<div id="lectureText" class="lecture-text">' . $pageContent[$_GET['pg'] - 1]['content'] . '</div>');
               }
@@ -489,8 +499,8 @@ $group = $row['group_name'];
                 } else {
                   echo '<tr>
                           <td>' . $userRow['surname'] . ' ' . $userRow['name'] . '</td>
-                          <td class="time"></td>
-                          <td class="score">Нет результата</td>
+                          <td class="time">-</td>
+                          <td class="score">-</td>
                         </tr>';
                 }
               }
@@ -500,16 +510,18 @@ $group = $row['group_name'];
           } else {
             echo ('<div id="lectureText" class="lecture-text">
               <form action="addUser.php?group=' . $_GET['group'] . '" method="POST">
-                <label for="name">Имя</label>
+                <label>Имя</label>
                 <input type="text" name="name" placeholder="Введите имя" required>
-                <label for="surname">Фамилия</label>
+                <label>Фамилия</label>
                 <input type="text" name="surname" placeholder="Введите фамилия" required>
-                <label for="password">Пароль</label>
+                <label>Пароль</label>
                 <input type="text" name="password" placeholder="Введите пароль" required>
-                <label for="group">Группа</label>
-                <input type="text" name="group" placeholder="Введите группу">
-                <label for="status"><input type="radio" name="status" value="user" required checked>Студент</label>
-                <label for="status"><input type="radio" name="status" value="admin" required>Учитель</label>
+                <div>
+                  <label><input type="radio" name="status" value="user" required checked>Студент</label>
+                  <label><input id="adminRadio" type="radio" name="status" value="admin" required>Учитель</label>
+                </div>
+                <label for="groupInput">Группа</label>
+                <input id="groupInput" type="text" name="group" placeholder="Введите группу">
                 <button type="submit" class="btn primary">Создать пользователя</button>
               </form>
             </div>');
